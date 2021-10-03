@@ -34,7 +34,7 @@ class Crud extends Component{
             if(error)console.log(error)
           });
           this.setState({modalAdd: false});
-          
+
       }
       //Editar
 
@@ -57,12 +57,22 @@ class Crud extends Component{
         }
       }
     handleChange=e=>{
-        this.setState({form:{
-            ...this.state.form,
-            [e.target.name]:e.target.value
+        if(e.target.type==='file'){
+            const file=e.target.files[0];
+            this.setState({form:{
+                ...this.state.form,
+                [e.target.name]:e.target.value,
+                foto:URL.createObjectURL(file)
+            }})
+        }else{
+            this.setState({form:{
+                ...this.state.form,
+                [e.target.name]:e.target.value
+            }
+            })
+            console.log(this.state.form);
         }
-        })
-        console.log(this.state.form);
+        
     }
 
     seleccionarEmpleado=async(empleado, id, caso)=>{
@@ -98,7 +108,8 @@ class Crud extends Component{
                     <tbody>
                         {Object.keys(this.state.data).map(i=>{
                             return <tr key={i}>
-                                        <td>{this.state.data[i].foto}</td>
+                                        
+                                        <td><img src={this.state.data[i].foto} width="60" height="60"></img></td>
                                         <td>{this.state.data[i].nombre}</td>
                                         <td>{this.state.data[i].edad}</td>
                                         <td>{this.state.data[i].sexo}</td>
@@ -120,7 +131,8 @@ class Crud extends Component{
                             <label>Edad:</label><br/>
                             <input type="number" className="form-control"name="edad" onChange={this.handleChange}/><br/>
                             <label>Sexo:</label><br/>
-                            <input type="text" className="form-control" name="sexo" onChange={this.handleChange}/><br/>
+                            <input type="radio"  name="sexo" onChange={this.handleChange} value="Hombre"/>Hombre<br/>
+                            <input type="radio" name="sexo" onChange={this.handleChange} value="Mujer"/>Mujer<br/>
                             <label>Salario:</label><br/>
                             <input type="number" className="form-control" name="salario" onChange={this.handleChange}/><br/>
                             <label>Foto:</label><br/>
