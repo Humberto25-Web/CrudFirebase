@@ -2,7 +2,7 @@ import firebase from "../firebase";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BsFillCartPlusFill } from "react-icons/bs";
 import React,{Component} from 'react';
-
+import swal from 'sweetalert';
 import { Modal,ModalBody,ModalHeader,ModalFooter } from "reactstrap";
 
 class Crud extends Component{
@@ -36,6 +36,22 @@ class Crud extends Component{
             if(error)console.log(error)
           });
           this.setState({modalAdd: false});
+
+      }
+
+       //Agregar a carrito
+    peticionAddCar=()=>{
+        swal({
+            title: "Producto Agregado al Carrito",
+            text:"Sigue explorando nuestros Productos",
+            icon:"success",
+            button:"Aceptar"
+        })
+        firebase.child("carrito").push(this.state.form,
+          error=>{
+            if(error)console.log(error)
+          });
+          this.setState({modalEditar: false});
 
       }
       //Editar
@@ -119,7 +135,7 @@ class Crud extends Component{
                                         <td>{this.state.data[i].tallas}</td>
                                         <td>${this.state.data[i].costo}</td>
                                         <td>
-                                            <button width="100"><BsFillCartPlusFill onClick={()=>this.seleccionarEmpleado(this.state.data[i], i, 'Comprar')}/></button>
+                                            <button width="100"><BsFillCartPlusFill onClick={()=>this.seleccionarEmpleado(this.state.data[i], i, 'Editar')}/></button>
                                         </td>
                             </tr>
                         })}
@@ -151,20 +167,20 @@ class Crud extends Component{
                     <ModalHeader>Editar Empleado</ModalHeader>
                     <ModalBody>
                         <div>
-                            <label>Nombre:</label><br/>
-                            <input type="text" className="form-control" name="nombre" onChange={this.handleChange} value={this.state.form && this.state.form.nombre}/><br/>
-                            <label>Edad:</label><br/>
-                            <input type="number" className="form-control"name="edad" onChange={this.handleChange } value={this.state.form && this.state.form.edad}/><br/>
-                            <label>Sexo:</label><br/>
-                            <input type="text" className="form-control" name="sexo" onChange={this.handleChange} value={this.state.form && this.state.form.sexo}/><br/>
-                            <label>Salario:</label><br/>
-                            <input type="number" className="form-control" name="salario" onChange={this.handleChange} value={this.state.form && this.state.form.salario}/><br/>
+                            <label>Producto:</label><br/>
+                            <input type="text" className="form-control" name="nombre" onChange={this.handleChange} value={this.state.form && this.state.form.nombre} readOnly/><br/>
+                            <label>Descripcion:</label><br/>
+                            <input type="text" className="form-control"name="descripcion" onChange={this.handleChange } value={this.state.form && this.state.form.descripcion}readOnly/><br/>
+                            <label>Tallas:</label><br/>
+                            <input type="text" className="form-control" name="tallas" onChange={this.handleChange} value={this.state.form && this.state.form.tallas} readOnly/><br/>
+                            <label>Costo:</label><br/>
+                            <input type="number" className="form-control" name="costo" onChange={this.handleChange} value={this.state.form && this.state.form.costo} readOnly/><br/>
                             <label>Foto:</label><br/>
-                            <input type="file" className="form-control" name="foto" onChange={this.handleChange} /><br/>
+                            <input type="file" className="form-control" name="foto" onChange={this.handleChange}/><br/>
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                             <button className="btn btn-primary" onClick={()=>this.peticionPut()}>Editar</button>
+                             <button className="btn btn-primary" onClick={()=>this.peticionAddCar()}>Agregar al Carrito</button>
                              <button className="btn btn-danger" onClick={()=>this.setState({modalEditar: false})}>Cancelar</button>
                     </ModalFooter>
                 </Modal>

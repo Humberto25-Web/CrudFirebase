@@ -31,7 +31,15 @@ class Crud extends Component{
         })
     }
 
-  
+  //Agregar
+  peticionPost=()=>{
+    firebase.child("chicos").push(this.state.form,
+      error=>{
+        if(error)console.log(error)
+      });
+      this.setState({modalAdd: false});
+
+  }
       //Agregar a carrito
     peticionAddCar=()=>{
         swal({
@@ -124,8 +132,7 @@ class Crud extends Component{
                             <th>Descripcion</th>
                             <th>Tallas</th>
                             <th>Precio</th>
-                            <th>Existencia</th>
-                            <th>Acciones</th>
+                            <th>Agrega <br/>al carrito</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -137,7 +144,7 @@ class Crud extends Component{
                                         <td>{this.state.data[i].descripcion}</td>
                                         <td>{this.state.data[i].tallas}</td>
                                         <td>${this.state.data[i].costo}</td>
-                                        <td>{this.state.data[i].existencia}</td>
+                                        
                                         <td>
                                             <button ><BsFillCartPlusFill onClick={()=>this.seleccionarEmpleado(this.state.data[i], i, 'Editar')}/></button>
                                         </td>
@@ -162,7 +169,7 @@ class Crud extends Component{
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                             <button className="btn btn-primary" onClick={()=>this.peticionAddCar()}>Agregar</button>
+                             <button className="btn btn-primary" onClick={()=>this.peticionPost()}>Agregar</button>
                              <button className="btn btn-danger" onClick={()=>this.setState({modalAdd: false})}>Cancelar</button>
                     </ModalFooter>
                 </Modal>
@@ -179,8 +186,6 @@ class Crud extends Component{
                             <input type="text" className="form-control" name="tallas" onChange={this.handleChange} value={this.state.form && this.state.form.tallas} readOnly/><br/>
                             <label>Costo:</label><br/>
                             <input type="number" className="form-control" name="costo" onChange={this.handleChange} value={this.state.form && this.state.form.costo} readOnly/><br/>
-                            <label>Cantidad a comprar:</label><br/>
-                            <input type="number" className="form-control" name="existencia" onChange={this.handleChange} value={this.state.form && this.state.form.existencia} readOnly/><br/>
                             <label>Foto:</label><br/>
                             <input type="file" className="form-control" name="foto" onChange={this.handleChange}/><br/>
                         </div>
