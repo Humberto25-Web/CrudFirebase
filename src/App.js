@@ -7,7 +7,7 @@ import Menu from './componentes/Menu';
 import Pagina1 from './pages/Pagina1';
 import Damas from './pages/Damas';
 import Nin from './pages/Nin';
-import Ofertas from './pages/Ofertas';
+
 import Carrito from './pages/Carrito';
 import Cab from './pages/Cab';
 import Crud from './componentes/Crud';
@@ -26,7 +26,6 @@ function App() {
           <Route path="/" exact={true} component={Pagina1}></Route>
           <Route path="/caballeros" exact={true} component={Cab}></Route>
           <Route path="/childrens" exact={true} component={Nin}></Route>
-          <Route path="/" exact={true} component={Ofertas}></Route>
           <Route path="/damas" exact={true} component={Damas}></Route>
            <Route path="/carrito" exact={true} component={Carrito}></Route>
         </div>

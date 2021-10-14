@@ -1,4 +1,4 @@
-import firebase from "../firebase";
+import {app} from "../firebase";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React,{Component} from 'react';
 import { Modal,ModalBody,ModalHeader,ModalFooter } from "reactstrap";
@@ -18,6 +18,7 @@ class Crud extends Component{
 
     };
     peticionGet=()=>{
+        const firebase=app.database().ref();
         firebase.child('empleados').on('value',empleado=>{
             if(empleado.val()!==null){
                 this.setState({...this.state.data,data:empleado.val()})
@@ -29,6 +30,7 @@ class Crud extends Component{
 
     //Agregar
     peticionPost=()=>{
+        const firebase=app.database().ref();
         firebase.child("empleados").push(this.state.form,
           error=>{
             if(error)console.log(error)
@@ -39,6 +41,7 @@ class Crud extends Component{
       //Editar
 
       peticionPut=()=>{
+        const firebase=app.database().ref();
         firebase.child(`empleados/${this.state.id}`).set(
           this.state.form,
           error=>{
@@ -50,6 +53,7 @@ class Crud extends Component{
       peticionDelete=()=>{
         if(window.confirm(`Estás seguro que deseas eliminar el canal ${this.state.form && this.state.form.nombre}?`))
         {
+            const firebase=app.database().ref();
         firebase.child(`empleados/${this.state.id}`).remove(
           error=>{
             if(error)console.log(error)

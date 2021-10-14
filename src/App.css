@@ -64,6 +64,9 @@ ul li a{
   border-radius: 6px;
   
 }
+.tall{
+  color: red;
+}
 label{
 color: black;
 font-style: normal;

@@ -1,4 +1,4 @@
-import firebase from "../firebase";
+import {app} from "../firebase";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BsFillCartPlusFill } from "react-icons/bs";
 import React,{Component} from 'react';
@@ -22,9 +22,10 @@ class Crud extends Component{
 
     };
     peticionGet=()=>{
-        firebase.child('chicos').on('value',empleado=>{
-            if(empleado.val()!==null){
-                this.setState({...this.state.data,data:empleado.val()})
+        const fb=app.database().ref();
+        fb.child('chicos').on('value',dato=>{
+            if(dato.val()!==null){
+                this.setState({...this.state.data,data:dato.val()})
             }else{
                 this.setState({data:[]})
             }
@@ -33,7 +34,8 @@ class Crud extends Component{
 
   //Agregar
   peticionPost=()=>{
-    firebase.child("chicos").push(this.state.form,
+    const fb=app.database().ref();
+    fb.child("chicos").push(this.state.form,
       error=>{
         if(error)console.log(error)
       });
@@ -48,7 +50,8 @@ class Crud extends Component{
             icon:"success",
             button:"Aceptar"
         })
-        firebase.child("carrito").push(this.state.form,
+        const fb=app.database().ref();
+        fb.child("carrito").push(this.state.form,
           error=>{
             if(error)console.log(error)
           });
@@ -67,7 +70,8 @@ class Crud extends Component{
       }*/
 
       peticionCarrito=()=>{
-        firebase.child(`carrito/${this.state.id}`).set(
+        const fb=app.database().ref();
+        fb.child(`carrito/${this.state.id}`).set(
           this.state.form,
           error=>{
             if(error)console.log(error)
@@ -78,19 +82,26 @@ class Crud extends Component{
       peticionDelete=()=>{
         if(window.confirm(`Estás seguro que deseas eliminar el canal ${this.state.form && this.state.form.nombre}?`))
         {
-        firebase.child(`chicos/${this.state.id}`).remove(
+            const fb=app.database().ref();
+        fb.child(`chicos/${this.state.id}`).remove(
           error=>{
             if(error)console.log(error)
           });
         }
       }
-    handleChange=e=>{
+
+    handleChange=async(e)=>{
+
         if(e.target.type==='file'){
             const file=e.target.files[0];
+            const storageRef=app.storage().ref();
+            const img=storageRef.child(file.name);
+            await img.put(file);
+            const urlImg=await img.getDownloadURL();
             this.setState({form:{
                 ...this.state.form,
                 [e.target.name]:e.target.value,
-                foto:URL.createObjectURL(file)
+                foto:urlImg
             }})
         }else{
             this.setState({form:{
@@ -103,9 +114,9 @@ class Crud extends Component{
         
     }
 
-    seleccionarEmpleado=async(empleado, id, caso)=>{
+    seleccionardato=async(dato, id, caso)=>{
 
-    await this.setState({form: empleado, id: id});
+    await this.setState({form: dato, id: id});
 
     (caso==="Editar")?this.setState({modalEditar: true}):
     this.peticionDelete()
@@ -120,10 +131,10 @@ class Crud extends Component{
             <div>
              <h1 className="titulos">Niños</h1>
                 
-                {/*<br/>
-                <button className="btn btn-primary" onClick={()=>this.setState({modalAdd:true})}>Insertar Empleado</button>
+               {/* <br/>
+                <button className="btn btn-primary" onClick={()=>this.setState({modalAdd:true})}>Insertar dato</button>
                 <br/> 
-                <br/>*/}
+               <br/>*/}
                 <table className="table table-striped">
                     <thead>
                         <tr>
@@ -146,7 +157,7 @@ class Crud extends Component{
                                         <td>${this.state.data[i].costo}</td>
                                         
                                         <td>
-                                            <button ><BsFillCartPlusFill onClick={()=>this.seleccionarEmpleado(this.state.data[i], i, 'Editar')}/></button>
+                                            <button ><BsFillCartPlusFill onClick={()=>this.seleccionardato(this.state.data[i], i, 'Editar')}/></button>
                                         </td>
                             </tr>
                         })}
@@ -182,12 +193,11 @@ class Crud extends Component{
                             <input type="text" className="form-control" name="nombre" onChange={this.handleChange} value={this.state.form && this.state.form.nombre} readOnly/><br/>
                             <label>Descripcion:</label><br/>
                             <input type="text" className="form-control"name="descripcion" onChange={this.handleChange } value={this.state.form && this.state.form.descripcion}readOnly/><br/>
-                            <label>Tallas:</label><br/>
-                            <input type="text" className="form-control" name="tallas" onChange={this.handleChange} value={this.state.form && this.state.form.tallas} readOnly/><br/>
+                            <label class="tall" >Escribe la Talla:</label><br/>
+                            <input type="text" className="form-control" name="tallas" onChange={this.handleChange} value={this.state.form && this.state.form.tallas} /><br/>
                             <label>Costo:</label><br/>
                             <input type="number" className="form-control" name="costo" onChange={this.handleChange} value={this.state.form && this.state.form.costo} readOnly/><br/>
-                            <label>Foto:</label><br/>
-                            <input type="file" className="form-control" name="foto" onChange={this.handleChange}/><br/>
+                            
                         </div>
                     </ModalBody>
                     <ModalFooter>

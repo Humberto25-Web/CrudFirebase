@@ -1,4 +1,4 @@
-import firebase from "../firebase";
+import {app} from "../firebase";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BsFillCartPlusFill } from "react-icons/bs";
 import React,{Component} from 'react';
@@ -24,9 +24,10 @@ class Crud extends Component{
 
     };
     peticionGet=()=>{
-        firebase.child('carrito').on('value',empleado=>{
-            if(empleado.val()!==null){
-                this.setState({...this.state.data,data:empleado.val()})
+        const firebase=app.database().ref();
+        firebase.child('carrito').on('value',dato=>{
+            if(dato.val()!==null){
+                this.setState({...this.state.data,data:dato.val()})
             }else{
                 this.setState({data:[]})
             }
@@ -34,6 +35,7 @@ class Crud extends Component{
     }
     //Agregar
     peticionPost=()=>{
+        const firebase=app.database().ref();
         firebase.child("carrito").push(this.state.form,
           error=>{
             if(error)console.log(error)
@@ -44,6 +46,7 @@ class Crud extends Component{
       //Editar
 
       peticionPut=()=>{
+        const firebase=app.database().ref();
         firebase.child(`carrito/${this.state.id}`).set(
           this.state.form,
           error=>{
@@ -60,6 +63,7 @@ class Crud extends Component{
             buttons:["No","Si"]
         }).then(respuesta=>{
             if(respuesta){
+                const firebase=app.database().ref();
                 firebase.child(`carrito/${this.state.id}`).remove(
                     error=>{
                       if(error)console.log(error)
@@ -88,7 +92,7 @@ class Crud extends Component{
           }))
        // if(window.confirm(`Estás seguro de su Compra`))
         {
-            
+            const firebase=app.database().ref();
         firebase.child(`carrito`).remove(
           error=>{
             if(error)console.log(error)
@@ -114,9 +118,9 @@ class Crud extends Component{
         
     }
 
-    seleccionarEmpleado=async(empleado, id, caso)=>{
+    seleccionardato=async(dato, id, caso)=>{
 
-    await this.setState({form: empleado, id: id});
+    await this.setState({form: dato, id: id});
 
     (caso==="Editar")?this.setState({modalEditar: true}):
     this.peticionDelete()
@@ -132,7 +136,7 @@ class Crud extends Component{
              <h1 className="titulos">Mi Carrito</h1>
                 
                 {/*<br/>
-                <button className="btn btn-primary" onClick={()=>this.setState({modalAdd:true})}>Insertar Empleado</button>
+                <button className="btn btn-primary" onClick={()=>this.setState({modalAdd:true})}>Insertar dato</button>
                 <br/> 
                 <br/>*/}
                 <table className="table table-striped">
@@ -159,7 +163,7 @@ class Crud extends Component{
                                         
                                         <td>
            
-                                            <button className="btn btn-danger" onClick={()=>this.seleccionarEmpleado(this.state.data[i], i, 'Eliminar')}> Quitar del Carrito</button>
+                                            <button className="btn btn-danger" onClick={()=>this.seleccionardato(this.state.data[i], i, 'Eliminar')}> Quitar del Carrito</button>
                                         </td>
                                        <label class="vi"> {this.state.cont += parseInt( this.state.data[i].costo)
                                         }</label>
